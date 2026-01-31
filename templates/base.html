@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessibility Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body class="fade-in">
+    <!-- Navbar -->
+        <header class="navbar slide-down">
+                <div class="logo ai-glow" tabindex="0" role="img" aria-label="Accessibility Assistant logo">
+                        <svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <defs>
+                                    <linearGradient id="lg" x1="0" x2="1" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#7b5cf7" />
+                                        <stop offset="60%" stop-color="#3b2a9a" />
+                                        <stop offset="100%" stop-color="#141c5b" />
+                                    </linearGradient>
+                                </defs>
+                                <rect width="64" height="64" rx="12" fill="#F2F0EF"/>
+
+                                <!-- speech bubble base -->
+                                <g class="logo-core" transform="translate(6,6)">
+                                    <path class="speech" d="M6 18c0-6.6 5.4-12 12-12h18c6.6 0 12 5.4 12 12v6c0 6.6-5.4 12-12 12H23l-6 6v-6H18c-6.6 0-12-5.4-12-12z" fill="url(#lg)" />
+
+                                    <!-- speech waves -->
+                                    <g class="waves" transform="translate(8,6)" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" fill="none" opacity="0.95">
+                                        <path d="M6 18c2.5-4 7-4 10 0" />
+                                        <path d="M6 22c2-3 6-3 8 0" opacity="0.85" />
+                                    </g>
+
+                                </g>
+
+                                <!-- orbiting AI nodes -->
+                                <g class="nodes">
+                                    <circle class="node node-1" cx="46" cy="12" r="4" fill="#7b5cf7" />
+                                    <circle class="node node-2" cx="50" cy="46" r="2.6" fill="#3b2a9a" />
+                                    <circle class="node node-3" cx="12" cy="48" r="1.8" fill="#7b5cf7" opacity="0.9" />
+                                </g>
+                        </svg>
+                        <div class="logo-text">Accessibility <span>Assistant</span></div>
+                </div>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('home') }}" class="highlight pulse">Home</a></li>
+                <li><a href="{{ url_for('about') }}" class="highlight">About</a></li>
+                <li><a href="{{ url_for('accessibility_tools') }}" class="highlight">Accessibility Tools</a></li>
+                <li><a href="{{ url_for('faq') }}" class="highlight">FAQ</a></li>
+            </ul>
+        </nav>
+        <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i></button>
+        
+    </header>
+
+    <!-- Main Content -->
+    <main class="fade-up">
+        {% block content %}{% endblock %}
+    </main>
+
+        <!-- JS -->
+        <script src="{{ url_for('static', filename='chatbot.js') }}"></script>
+
+        <!-- Back to top functionality -->
+        <script>
+            (function () {
+                const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                function getBackToTop() { return document.getElementById('back-to-top'); }
+                function getAnnounceNode() { return document.getElementById('footer-announcer'); }
+
+                function announce(text) {
+                    const announceNode = getAnnounceNode();
+                    if (announceNode) {
+                        announceNode.textContent = text;
+                        setTimeout(() => { announceNode.textContent = ''; }, 1400);
+                    }
+                }
+
+                // show back-to-top after scrolling down some amount
+                function checkScroll() {
+                    const backToTop = getBackToTop();
+                    if (window.scrollY > 320) backToTop && backToTop.classList.add('visible'); else backToTop && backToTop.classList.remove('visible');
+                }
+
+                let ticking = false;
+                window.addEventListener('scroll', function () {
+                    if (!ticking) {
+                        window.requestAnimationFrame(function () { checkScroll(); ticking = false; });
+                        ticking = true;
+                    }
+                }, { passive: true });
+
+                window.addEventListener('load', function () {
+                    const backToTop = getBackToTop();
+                    if (backToTop) {
+                        backToTop.addEventListener('click', function () {
+                            window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+                            announce('Returned to top');
+                        });
+                    }
+                });
+                
+                // DELEGATED INTERACTIONS: keyboard activation for tool/feature cards and nav aria-current
+                (function delegatedInteractions(){
+                    function activateCard(el) {
+                        if (!el) return;
+                        // if tool-card with data-href, navigate
+                        const href = el.getAttribute('data-href');
+                        if (href) { window.location.href = href; return; }
+                        // toggle feature card
+                        if (el.classList.contains('feature-card')) {
+                            const expanded = el.classList.toggle('active');
+                            el.setAttribute('aria-pressed', expanded ? 'true' : 'false');
+                            el.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                        }
+                    }
+
+                    // keyboard handler: Enter / Space activates
+                    document.addEventListener('keydown', function(e){
+                        const active = document.activeElement;
+                        if (!active) return;
+                        const isCard = active.classList && (active.classList.contains('tool-card') || active.classList.contains('feature-card'));
+                        if (!isCard) return;
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            activateCard(active);
+                        }
+                    });
+
+                    // make nav reflect current page
+                    try {
+                        const path = location.pathname || '/';
+                        document.querySelectorAll('.nav-menu a').forEach(a => {
+                            if (a.getAttribute('href') === path || a.href === location.href) {
+                                a.classList.add('active');
+                                a.setAttribute('aria-current','page');
+                            }
+                        });
+                    } catch (e) { /* ignore in non-browser reads */ }
+                })();
+            })();
+        </script>
+
+        <!-- Mobile nav toggle script -->
+        <script>
+            (function(){
+                const btn = document.getElementById('mobileNavToggle');
+                const header = document.querySelector('.navbar');
+                const navLinks = document.querySelectorAll('.nav-menu a');
+                if(!btn || !header) return;
+                btn.addEventListener('click', function(){
+                    const open = header.classList.toggle('nav-open');
+                    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                });
+                // close nav when a link is clicked (mobile)
+                navLinks.forEach(a=> a.addEventListener('click', ()=> { header.classList.remove('nav-open'); btn.setAttribute('aria-expanded','false'); }));
+                // close on escape
+                document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') { header.classList.remove('nav-open'); btn.setAttribute('aria-expanded','false'); }});
+            })();
+        </script>
+
+        
+
+                <!-- Interactive site-wide footer -->
+                <footer class="footer-bar" role="contentinfo" aria-label="Site footer">
+                    <div class="footer-content">
+                        <div class="footer-col footer-brand">
+                            <svg class="footer-logo-mark" width="56" height="56" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                <rect width="64" height="64" rx="10" fill="#F2F0EF" />
+                                <path d="M16 34c0-6 5-11 11-11h14c6 0 11 5 11 11v4c0 6-5 11-11 11H36l-6 6v-6H27c-6 0-11-5-11-11z" fill="#141c5b" opacity="0.95" />
+                                <circle cx="46" cy="14" r="3" fill="#7b5cf7" />
+                            </svg>
+                            <div class="footer-brand-text">
+                                <strong>Accessibility Assistant</strong>
+                                <div class="muted">Tools & resources for inclusive web experiences</div>
+                            </div>
+                        </div>
+
+                        <div class="footer-col footer-links">
+                            <h4>Explore</h4>
+                            <ul>
+                                <li><a href="{{ url_for('home') }}">Home</a></li>
+                                <li><a href="{{ url_for('about') }}">About</a></li>
+                                <li><a href="{{ url_for('accessibility_tools') }}">Accessibility Tools</a></li>
+                                <li><a href="{{ url_for('faq') }}">FAQ</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="footer-col footer-contact">
+                            <h4>Contact</h4>
+                            <div class="muted">Have questions? Reach out on social or send an email.</div>
+                            <div style="height:8px"></div>
+                            <div class="socials" role="list">
+                                <a class="social" role="listitem" href="https://www.linkedin.com/in/priya-adabala-301426292" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="social" role="listitem" href="https://github.com/Adabala-sri-Viswa-priya" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="footer-bottom">
+                        <p>&copy; {{ current_year if current_year is defined else '2025' }} Accessibility Assistant — Built for inclusive experiences.</p>
+                    </div>
+                </footer>
+
+                <!-- Footer announcer for assistive tech -->
+                <div id="footer-announcer" class="sr-only" role="status" aria-live="polite"></div>
+
+                <!-- Back to top button -->
+                <button id="back-to-top" class="back-to-top" aria-label="Back to top">▲</button>
+</body>
+</html>

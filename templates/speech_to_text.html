@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="stt-section">
+    <h2 class="stt-heading">Speech to Text</h2>
+    <p class="stt-sub">Speak into your microphone and watch your words appear instantly.</p>
+
+    <div class="stt-container">
+        <div id="wave" class="wave-animation"></div>
+
+        <button id="startBtn" class="stt-btn start">🎙 Start Listening</button>
+        <button id="stopBtn" class="stt-btn stop">⏹ Stop</button>
+
+        <div id="output" class="output-area">Your speech will appear here...</div>
+    </div>
+</section>
+
+<script>
+// Web Speech API recognition setup
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.lang = "en-US";
+
+// EVENT: When speech is detected
+recognition.onresult = (event) => {
+    let text = "";
+    for (let i = 0; i < event.results.length; i++) {
+        text += event.results[i][0].transcript;
+    }
+    document.getElementById("output").innerText = text;
+};
+
+// Start button
+document.getElementById("startBtn").onclick = () => {
+    recognition.start();
+    document.getElementById("wave").style.display = "block";
+};
+
+// Stop button
+document.getElementById("stopBtn").onclick = () => {
+    recognition.stop();
+    document.getElementById("wave").style.display = "none";
+};
+</script>
+
+
+<style>
+.stt-section {
+    text-align: center;
+    padding: 4rem 1rem;
+    animation: fadeIn 1.2s ease;
+}
+
+.stt-heading {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #002f6c;
+}
+
+.stt-sub {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.stt-container {
+    max-width: 900px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.stt-btn {
+    padding: 14px 40px;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: .3s;
+    font-weight: bold;
+}
+
+.start {
+    background: #004aad;
+    color: white;
+}
+.stop {
+    background: #004aad;
+    color: white;
+}
+
+.stt-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+}
+
+.output-area {
+    min-height: 200px;
+    background: #ffffff;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    padding: 1.5rem;
+    border-radius: 15px;
+    font-size: 1.3rem;
+    color: #333;
+    text-align: left;
+    white-space: pre-wrap;
+}
+
+/* Microphone animation waveform */
+.wave-animation {
+    display: none;
+    width: 220px;
+    height: 60px;
+    margin: 0 auto;
+    background: repeating-linear-gradient(
+        90deg,
+        #004aad 0, #004aad 6px,
+        transparent 6px, transparent 12px
+    );
+    animation: wave 0.6s infinite;
+    border-radius: 4px;
+}
+
+@keyframes wave {
+    0% { transform: scaleY(0.2); }
+    50% { transform: scaleY(1); }
+    100% { transform: scaleY(0.2); }
+}
+
+@keyframes fadeIn {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+</style>
+
+{% endblock %}

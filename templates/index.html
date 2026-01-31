@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+
+    <!-- LEFT CONTENT -->
+    <div class="hero-text">
+        <h4>Enhance Digital Accessibility</h4>
+
+        <h1>
+            Accessibility <br>
+            Assistant for <br>
+            <span>Inclusive Digital Access</span>
+        </h1>
+
+        <p>
+            An AI-powered Accessibility Assistant designed to support people with
+            hearing, visual, and physical impairments by enhancing digital
+            interaction and usability.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="{{ url_for('accessibility_tools') }}" class="btn-primary">
+                Get Started
+            </a>
+            <a href="{{ url_for('about') }}" class="btn-secondary">
+                Learn More
+            </a>
+        </div>
+    </div>
+
+    <!-- RIGHT IMAGE -->
+    <div class="hero-image">
+        <img
+            src="https://reciteme.com/wp-content/uploads/2023/11/Assistive-Tech-Hearing-Impairements-Header-v2.png"
+            alt="Accessibility Assistant illustration showing assistive technology">
+    </div>
+
+</section>
+{% endblock %}

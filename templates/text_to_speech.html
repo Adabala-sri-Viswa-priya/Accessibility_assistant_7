@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<section class="tts-section">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h2 class="title">AI Voice Assistant</h2>
+    <p class="subtitle">Translate • Speak • Interact with Intelligence</p>
+  </div>
+
+  <!-- INPUT -->
+  <div class="glass-card input-card floating">
+    <textarea id="textInput" placeholder="Type something for AI to speak..."></textarea>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-top glass-card floating small-card">
+    <select id="languageSelect">
+      <option value="en">English (India)</option>
+      <option value="hi">Hindi</option>
+      <option value="te">Telugu</option>
+    </select>
+
+    <div id="volumeControl">
+      <i class="fas fa-volume-up volume-icon"></i>
+      <input type="range" id="volumeRange" min="0" max="1" step="0.05" value="1">
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="buttons">
+    <button id="speakBtn" class="ai-btn glow">
+      <i class="fas fa-microphone"></i>
+      <span>Speak</span>
+    </button>
+
+    <button id="stopBtn" class="stop-btn">
+      <i class="fas fa-stop"></i>
+      <span>Stop</span>
+    </button>
+  </div>
+
+  <!-- AI ROBOT -->
+  <div class="robot-indicator" id="speakingWave">
+    <div class="ai-core"></div>
+    <i class="fas fa-robot"></i>
+    <div class="robot-bars">
+      <span></span><span></span><span></span>
+    </div>
+    <p class="ai-status">AI is speaking...</p>
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="outputBox" class="glass-card output-card floating">
+    <p id="translatedOutput">Text will appear here...</p>
+  </div>
+
+</section>
+
+<!-- ================= SCRIPT (UNCHANGED) ================= -->
+<script>
+let audio = null;
+let intervalId = null;
+
+async function speakText() {
+    const text = textInput.value.trim();
+    if (!text) return alert("Please enter text");
+
+    const lang = languageSelect.value;
+
+    const tr = await fetch("/translate", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ text, target: lang })
+    });
+    const trData = await tr.json();
+    const translatedText = trData.translatedText || text;
+
+    translatedOutput.innerText = translatedText;
+
+    const tts = await fetch("/tts", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ text: translatedText, lang })
+    });
+    const ttsData = await tts.json();
+
+    if (ttsData.audio) {
+        if (audio) audio.pause();
+
+        audio = new Audio(ttsData.audio);
+        audio.volume = volumeRange.value;
+        audio.play();
+
+        speakingWave.style.display = "flex";
+
+        audio.onended = () => {
+            speakingWave.style.display = "none";
+            clearInterval(intervalId);
+        };
+
+        const words = translatedText.split(" ");
+        let i = 0;
+
+        intervalId = setInterval(() => {
+            if (i >= words.length) return clearInterval(intervalId);
+            translatedOutput.innerHTML = words.map((w, idx) =>
+                idx === i ? `<span class="highlight">${w}</span>` : w
+            ).join(" ");
+            i++;
+        }, 320);
+    }
+}
+
+function stopSpeech(){
+    if(audio){
+        audio.pause();
+        audio.currentTime = 0;
+    }
+    speakingWave.style.display = "none";
+    clearInterval(intervalId);
+}
+
+speakBtn.onclick = speakText;
+stopBtn.onclick = stopSpeech;
+volumeRange.oninput = () => { if(audio) audio.volume = volumeRange.value; };
+</script>
+
+<!-- ================= STYLE ================= -->
+<style>
+/* ===== BACKGROUND ===== */
+.tts-section{
+  min-height:100vh;
+  padding:3rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:25px;
+  background:#F2F0EF;
+  position:relative;
+}
+
+.tts-section::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at top,#dbeafe,transparent 60%),
+    radial-gradient(circle at bottom,#ede9fe,transparent 60%);
+  z-index:-1;
+}
+
+/* ===== HEADER ===== */
+.header{text-align:center;margin-bottom:10px}
+
+.title{
+  font-size:3.2rem;
+  font-weight:900;
+  background:linear-gradient(90deg,#2563eb,#7c3aed);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.subtitle{opacity:.75}
+
+/* ===== GLASS CARDS ===== */
+.glass-card{
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(18px);
+  border-radius:22px;
+  box-shadow:
+    0 25px 45px rgba(0,0,0,.12),
+    inset 0 1px 0 rgba(255,255,255,.6);
+  padding:25px;
+  width:700px;
+  max-width: calc(100% - 40px);
+}
+
+.floating{
+  transition:.4s ease;
+}
+.floating:hover{
+  transform:translateY(-6px);
+  box-shadow:0 35px 60px rgba(0,0,0,.18);
+}
+
+.card-label{
+  font-size:.9rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:#64748b;
+  margin-bottom:8px;
+  display:block;
+}
+
+/* ===== INPUT ===== */
+textarea{
+  width:100%;
+  height:150px;
+  border:none;
+  background:transparent;
+  outline:none;
+  resize:none;
+  font-size:1.15rem;
+  line-height:1.7;
+}
+
+/* ===== OUTPUT ===== */
+.output-card{
+  border-left:6px solid #6366f1;
+}
+#translatedOutput{margin:0}
+
+/* ===== CONTROLS ===== */
+.small-card{
+  display:flex;
+  gap:30px;
+  align-items:center;
+  justify-content:center;
+}
+
+select{
+  padding:10px 15px;
+  border-radius:10px;
+  border:none;
+  font-size:1rem;
+}
+
+/* ===== VOLUME ===== */
+#volumeControl{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.volume-icon{
+  color:#6366f1;
+  font-size:1.4rem;
+}
+
+/* ===== BUTTONS ===== */
+.buttons{
+  display:flex;
+  gap:30px;
+  margin:20px 0;
+}
+
+.ai-btn{
+  padding:16px 55px;
+  border:none;
+  border-radius:60px;
+  background:linear-gradient(90deg,#2563eb,#7c3aed);
+  color:white;
+  font-size:1.2rem;
+  cursor:pointer;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  transition:.3s;
+}
+
+.glow:hover{
+  box-shadow:0 0 70px rgba(99,102,241,.9);
+  transform:scale(1.15);
+}
+
+.stop-btn{
+  padding:16px 55px;
+  border:none;
+  border-radius:60px;
+  background:#ef4444;
+  color:white;
+  font-size:1.2rem;
+  cursor:pointer;
+}
+
+/* ===== ROBOT ===== */
+.robot-indicator{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+
+/* ===== MOBILE ADJUSTMENTS ===== */
+@media (max-width: 780px) {
+  .tts-section{ padding: 20px; gap:16px; }
+  .header { text-align: left; width: 100%; }
+  .title { font-size: 2rem; }
+  .subtitle { font-size: 0.95rem; }
+  .glass-card { padding:16px; border-radius:14px; }
+  .input-card textarea { height: 130px; }
+  .small-card { flex-direction: column; gap:12px; align-items: stretch; }
+  select { width: 100%; }
+  #volumeControl { width:100%; justify-content: space-between; }
+  .buttons { flex-direction: column; gap:12px; width:100%; }
+  .ai-btn, .stop-btn { width:100%; padding:12px 18px; font-size:1rem; border-radius:12px; }
+  .robot-indicator{ display:flex; position:relative; padding:8px 12px; border-radius:12px; }
+  .robot-indicator i{ font-size:2.4rem; }
+  .ai-core{ width:70px; height:70px; }
+  .robot-bars span{ width:5px; height:14px; }
+  .output-card { width:100%; }
+}
+
+.robot-indicator i{
+  font-size:4.2rem;
+  color:#6366f1;
+  animation:pulse .6s infinite alternate;
+}
+
+.ai-status{
+  font-size:.9rem;
+  opacity:.7;
+}
+
+.ai-core{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  background:radial-gradient(circle,#a5b4fc,transparent);
+  filter:blur(18px);
+  position:absolute;
+  animation:corePulse 1s infinite;
+}
+
+.robot-bars span{
+  width:6px;
+  height:20px;
+  background:#6366f1;
+  display:inline-block;
+  margin:0 4px;
+  animation:bars .6s infinite alternate;
+}
+
+/* ===== HIGHLIGHT ===== */
+.highlight{
+  background:#fde68a;
+  padding:3px 6px;
+  border-radius:6px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes pulse{to{transform:scale(1.25)}}
+@keyframes bars{to{height:32px}}
+@keyframes corePulse{to{opacity:1}}
+</style>
+
+{% endblock %}

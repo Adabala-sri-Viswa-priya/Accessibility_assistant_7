@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="tools-section">
+    <h2 class="tools-heading">Accessibility Tools</h2>
+    <p class="sub-heading">Select a tool below to access its features and enhance your experience.</p>
+
+    <div class="tools-card-wrapper">
+        <div class="tool-card" data-href="{{ url_for('text_to_speech') }}" tabindex="0" role="link" aria-label="Text to Speech tool">
+            <span class="icon" aria-hidden="true"><i class="fa-solid fa-volume-high"></i></span>
+            <h3>Text to Speech</h3>
+        </div>
+
+        <div class="tool-card" data-href="{{ url_for('speech_to_text') }}" tabindex="0" role="link" aria-label="Speech to Text tool">
+            <span class="icon" aria-hidden="true"><i class="fa-solid fa-microphone"></i></span>
+            <h3>Speech to Text</h3>
+        </div>
+
+        <div class="tool-card" data-href="{{ url_for('navigation_help') }}" tabindex="0" role="link" aria-label="Navigation Help tool">
+            <span class="icon" aria-hidden="true"><i class="fa-solid fa-compass"></i></span>
+            <h3>Navigation Help</h3>
+        </div>
+    </div>
+</section>
+
+<script>
+// Make all cards with data-href clickable
+document.querySelectorAll('.tool-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const href = card.getAttribute('data-href');
+        if (href) {
+            window.location.href = href;
+        }
+    });
+});
+</script>
+{% endblock %}

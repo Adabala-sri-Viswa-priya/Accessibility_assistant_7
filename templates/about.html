@@ -1,0 +1,578 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Background Pattern -->
+<div class="page-background">
+    <div class="bg-pattern"></div>
+</div>
+
+<!-- The Challenge Section -->
+<section class="challenge-section">
+    <div class="container">
+        <h2 class="section-title">The Challenge We Address</h2>
+        <p class="section-subtitle">
+            Digital content is central to education, work, and daily life, yet many websites and apps remain difficult or impossible for people with disabilities.
+            Our challenge was to build an assistant that bridges this gap.
+        </p>
+
+        <div class="challenge-grid">
+            <div class="card challenge-card">
+                <div class="challenge-icon">
+                    <i class="fa-solid fa-eye-slash"></i>
+                </div>
+                <h3>Visual Impairments</h3>
+                <p>Text-to-Speech (TTS) technology converts written content into clear spoken audio, enabling visually impaired users to access digital information effortlessly.</p>
+                <img src="{{ url_for('static', filename='images/visual_impairment.png') }}" alt="Visual Impairment" onerror="this.style.display='none'">
+            </div>
+
+            <div class="card challenge-card">
+                <div class="challenge-icon">
+                    <i class="fa-solid fa-deaf"></i>
+                </div>
+                <h3>Hearing Impairments</h3>
+                <p>Speech-to-Text (STT) transcribes spoken words into written text in real time, making communication accessible for those with hearing difficulties.</p>
+                <img src="{{ url_for('static', filename='images/hearing_impairment.png') }}" alt="Hearing Impairment" onerror="this.style.display='none'">
+            </div>
+
+            <div class="card challenge-card">
+                <div class="challenge-icon">
+                    <i class="fa-solid fa-hand"></i>
+                </div>
+                <h3>Motor Impairments</h3>
+                <p>Voice navigation allows users with motor disabilities to control devices and applications using simple voice commands, eliminating the need for precise mouse or keyboard input.</p>
+                <img src="{{ url_for('static', filename='images/motor_impairment.png') }}" alt="Motor Impairment" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Solution Section -->
+<section class="solution-section">
+    <div class="container">
+        <h2 class="section-title">Our Comprehensive Solution</h2>
+        <p class="section-subtitle">
+            Our Accessibility Assistant combines cutting-edge AI technologies to create a seamless, inclusive digital experience.
+            Three powerful features work together to break down accessibility barriers.
+        </p>
+
+        <div class="solution-features">
+            <div class="card feature-card" onclick="toggleFeature(this)">
+                <div class="feature-header">
+                    <i class="fa-solid fa-volume-high feature-icon"></i>
+                    <h3>Advanced Text-to-Speech</h3>
+                </div>
+                <div class="feature-content">
+                    <p>Converts written digital content into natural, human-like spoken audio using state-of-the-art neural text-to-speech technology.</p>
+                    <ul>
+                        <li>Multiple voice options and languages</li>
+                        <li>Adjustable speech rate and pitch</li>
+                        <li>High-quality audio output</li>
+                        <li>Supports various file formats</li>
+                    </ul>
+                </div>
+                <img src="{{ url_for('static', filename='images/text_to_speech.png') }}" alt="Text to Speech" onerror="this.style.display='none'">
+            </div>
+
+            <div class="card feature-card" onclick="toggleFeature(this)">
+                <div class="feature-header">
+                    <i class="fa-solid fa-microphone-lines feature-icon"></i>
+                    <h3>Intelligent Speech-to-Text</h3>
+                </div>
+                <div class="feature-content">
+                    <p>Transcribes spoken words into accurate written text using advanced speech recognition algorithms.</p>
+                    <ul>
+                        <li>Real-time transcription</li>
+                        <li>Noise cancellation technology</li>
+                        <li>Multiple language support</li>
+                        <li>Context-aware corrections</li>
+                    </ul>
+                </div>
+                <img src="{{ url_for('static', filename='images/speech_to_text.png') }}" alt="Speech to Text" onerror="this.style.display='none'">
+            </div>
+
+            <div class="card feature-card" onclick="toggleFeature(this)">
+                <div class="feature-header">
+                    <i class="fa-solid fa-compass feature-icon"></i>
+                    <h3>Voice Navigation Assistant</h3>
+                </div>
+                <div class="feature-content">
+                    <p>Enables hands-free control of applications and websites through intuitive voice commands.</p>
+                    <ul>
+                        <li>Open apps and websites</li>
+                        <li>Navigate menus and interfaces</li>
+                        <li>Execute common tasks</li>
+                        <li>Customizable command sets</li>
+                    </ul>
+                </div>
+                <img src="{{ url_for('static', filename='images/navigation_help.png') }}" alt="Navigation Help" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Section -->
+<section class="impact-section">
+    <div class="container">
+        <h2 class="section-title">Making a Real Impact</h2>
+        <p class="section-subtitle">
+            Our accessibility assistant is designed to empower users and create a more inclusive digital world.
+        </p>
+
+        <div class="impact-stats">
+            <div class="card impact-stat">
+                <div class="stat-number">100%</div>
+                <h3>Accessibility Focused</h3>
+                <p>Built specifically for users with disabilities, ensuring comprehensive support.</p>
+            </div>
+            <div class="card impact-stat">
+                <div class="stat-number">AI</div>
+                <h3>Powered Technology</h3>
+                <p>Leveraging cutting-edge artificial intelligence for superior performance.</p>
+            </div>
+            <div class="card impact-stat">
+                <div class="stat-number">∞</div>
+                <h3>Limitless Potential</h3>
+                <p>Continuously evolving to meet the changing needs of our users.</p>
+            </div>
+        </div>
+
+        <div class="impact-message">
+            <blockquote>
+                "Technology should work for everyone. Our accessibility assistant is a step towards a truly inclusive digital future."
+            </blockquote>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="section-title">Ready to Experience Inclusive Technology?</h2>
+        <p class="section-subtitle">
+            Join thousands of users who have transformed their digital experience with our accessibility assistant.
+        </p>
+        <div class="cta-buttons">
+            <a href="{{ url_for('accessibility_tools') }}" class="btn-secondary">Try Our Tools</a>
+        </div>
+    </div>
+</section>
+
+<style>
+/* ===== BASE CARD STYLE ===== */
+.card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(20,28,91,0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(20,28,91,0.05);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(20,28,91,0.2);
+    border-color: rgba(20,28,91,0.1);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #141c5b, rgba(20,28,91,0.3));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.card:hover::before {
+    transform: scaleX(1);
+}
+/* ===== BACKGROUND PATTERN ===== */
+.page-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bg-pattern {
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle at 25% 25%, rgba(20,28,91,0.03) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(20,28,91,0.02) 0%, transparent 50%);
+    background-size: 400px 400px;
+    opacity: 0.5;
+}
+
+/* ===== GENERAL SECTIONS ===== */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.challenge-section, .solution-section, .impact-section, .cta-section {
+    padding: 5rem 0;
+    text-align: center;
+    background: #F2F0EF;
+    position: relative;
+}
+
+.challenge-section {
+    padding-top: 2rem;
+}
+
+.solution-section {
+    padding-top: 3rem;
+}
+
+.impact-section {
+    padding-top: 3rem;
+}
+
+.cta-section {
+    padding-top: 3rem;
+}
+
+.challenge-section::before,
+.solution-section::before,
+.impact-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(20,28,91,0.1) 50%, transparent 100%);
+}
+
+.cta-section {
+    background: #F2F0EF;
+    color: #141c5b;
+}
+
+.section-title {
+    font-size: 2.8rem;
+    color: #141c5b;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.cta-section .section-title {
+    color: #141c5b;
+}
+
+.section-subtitle {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.cta-section .section-subtitle {
+    color: #000000;
+}
+
+/* ===== CHALLENGE GRID ===== */
+.challenge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.challenge-card {
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.challenge-icon {
+    font-size: 3rem;
+    color: #141c5b;
+    margin-bottom: 1rem;
+}
+
+.challenge-card h3 {
+    color: #141c5b;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.challenge-card p {
+    color: #333;
+    line-height: 1.6;
+}
+
+.challenge-card img {
+    max-width: 120px;
+    margin-top: 1.5rem;
+    border-radius: 8px;
+}
+
+/* ===== SOLUTION FEATURES ===== */
+.solution-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.feature-card {
+    cursor: pointer;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem;
+}
+
+.feature-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: #141c5b;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.feature-card h3 {
+    color: #141c5b;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.feature-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    opacity: 0;
+}
+
+.feature-content p {
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.feature-content ul {
+    text-align: left;
+    padding-left: 1.5rem;
+}
+
+.feature-content li {
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.feature-card.active .feature-content {
+    max-height: 500px;
+    opacity: 1;
+}
+
+.feature-card img {
+    max-width: 200px;
+    margin: 0.5rem auto;
+    border-radius: 8px;
+    display: block;
+}
+.impact-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.impact-stat {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 3rem;
+    color: #141c5b;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.impact-stat h3 {
+    color: #141c5b;
+    margin-bottom: 1rem;
+}
+
+.impact-stat p {
+    color: #555;
+    line-height: 1.5;
+}
+
+.impact-message {
+    margin-top: 3rem;
+    padding: 3rem;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(20,28,91,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.impact-message::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(20,28,91,0.02) 0%, rgba(20,28,91,0.05) 100%);
+    pointer-events: none;
+}
+
+.impact-message blockquote {
+    font-size: 1.4rem;
+    color: #141c5b;
+    font-style: italic;
+    margin: 0;
+    position: relative;
+    z-index: 2;
+    line-height: 1.6;
+}
+
+.impact-message blockquote::before {
+    content: '"';
+    font-size: 5rem;
+    color: rgba(20,28,91,0.1);
+    position: absolute;
+    left: -30px;
+    top: -15px;
+    font-family: serif;
+}
+
+/* ===== CTA SECTION ===== */
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.cta-buttons .btn-primary {
+    background: #ffffff;
+    color: #141c5b;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.cta-buttons .btn-primary:hover {
+    background: #F2F0EF;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,255,255,0.3);
+}
+
+.cta-buttons .btn-secondary {
+    border: 2px solid #141c5b;
+    color: #141c5b;
+    background: transparent;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.cta-buttons .btn-secondary:hover {
+    background: #141c5b;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .challenge-grid, .solution-features, .impact-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .steps-container {
+        flex-direction: column;
+    }
+
+    .step-arrow {
+        transform: rotate(90deg);
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+    }
+
+    .accessibility-icon {
+        font-size: 5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-about, .challenge-section, .solution-section, .how-it-works-section, .impact-section, .cta-section {
+        padding: 3rem 1rem;
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .challenge-card, .feature-card, .step {
+        padding: 1.5rem;
+    }
+}
+</style>
+
+<script>
+function toggleFeature(card) {
+    // Close other open cards
+    document.querySelectorAll('.feature-card.active').forEach(function(activeCard) {
+        if (activeCard !== card) {
+            activeCard.classList.remove('active');
+        }
+    });
+    // Toggle the clicked card
+    card.classList.toggle('active');
+}
+
+// Add smooth scrolling for anchor links
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('a[href^="#"]');
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
